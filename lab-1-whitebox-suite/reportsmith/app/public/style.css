@@ -1,0 +1,159 @@
+/* ==========================================================================
+   SIXS Security Training Lab — shared visual identity
+   Deliberately broken on purpose. You're welcome.
+   Monochrome, high-contrast, technical. Black ground, white ink, hairline grid.
+   This file is the canonical theme; each lab app ships its own copy so the
+   containers stay self-contained.
+   ========================================================================== */
+
+:root {
+  --bg:        #050607;
+  --bg-2:      #0c0e11;
+  --panel:     #121418;
+  --panel-2:   #171a1f;
+  --ink:       #f1f3f5;
+  --muted:     #8a9199;
+  --faint:     #5a616a;
+  --line:      rgba(255,255,255,0.09);
+  --line-2:    rgba(255,255,255,0.16);
+  --glow:      rgba(255,255,255,0.55);
+  --accent:    #ffffff;
+  --ok:        #7ee0a5;
+  --err:       #ff8a7a;
+  --warn:      #f5cf6b;
+  --radius:    10px;
+  --mono: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink);
+  background-color: var(--bg);
+  /* faint perspective-less grid — because flat is boring */
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px),
+    radial-gradient(1200px 600px at 70% -10%, rgba(255,255,255,0.05), transparent 60%);
+  background-size: 46px 46px, 46px 46px, 100% 100%;
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+/* ---- top bar ----------------------------------------------------------- */
+.sx-nav {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; gap: 1.1rem; flex-wrap: wrap;
+  padding: .7rem 1.2rem;
+  background: rgba(5,6,7,0.82);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.sx-brand {
+  display: inline-flex; align-items: center; gap: .55rem;
+  font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  font-size: .82rem; color: var(--ink); text-decoration: none;
+}
+.sx-brand .mark {
+  display: inline-grid; place-items: center;
+  width: 22px; height: 22px; border: 1px solid var(--line-2);
+  background: var(--ink); color: var(--bg);
+  font-weight: 800; font-size: .62rem; letter-spacing: .02em; border-radius: 4px;
+}
+.sx-app {
+  font-weight: 600; letter-spacing: .02em; color: var(--ink);
+  text-decoration: none; font-size: .95rem;
+  padding-left: 1.1rem; border-left: 1px solid var(--line);
+}
+.sx-nav .links { display: flex; gap: 1rem; flex-wrap: wrap; margin-left: auto; }
+.sx-nav .links a { color: var(--muted); text-decoration: none; font-size: .9rem; }
+.sx-nav .links a:hover { color: var(--ink); }
+.sx-tag {
+  font-family: var(--mono); font-size: .66rem; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--faint);
+  border: 1px solid var(--line); border-radius: 999px; padding: .1rem .5rem;
+}
+
+/* ---- layout ------------------------------------------------------------ */
+.sx-main, main.content, main { max-width: 960px; margin: 2.4rem auto; padding: 0 1.2rem; }
+
+h1, h2, h3 { line-height: 1.25; letter-spacing: -0.01em; }
+h1 { font-size: 1.7rem; margin: 0 0 1rem; }
+h1 .sub { display:block; font-size:.8rem; font-weight:400; letter-spacing:.02em; color:var(--muted); margin-top:.25rem; }
+h2 { font-size: 1.2rem; margin: 1.8rem 0 .8rem; color: var(--ink); }
+p { color: var(--ink); }
+a { color: var(--accent); text-underline-offset: 3px; }
+
+/* ---- surfaces ---------------------------------------------------------- */
+.card, .panel {
+  background: linear-gradient(180deg, var(--panel), var(--bg-2));
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.2rem 1.4rem;
+  margin: 1rem 0;
+}
+.card h2:first-child, .panel h2:first-child { margin-top: 0; }
+
+/* ---- forms ------------------------------------------------------------- */
+label { display: block; margin: .8rem 0 .3rem; color: var(--muted); font-size: .85rem; }
+input, textarea, select {
+  width: 100%; font: inherit; color: var(--ink);
+  background: var(--bg-2); border: 1px solid var(--line-2);
+  border-radius: 8px; padding: .55rem .7rem;
+}
+input:focus, textarea:focus, select:focus {
+  outline: none; border-color: var(--glow);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.08);
+}
+input[type=checkbox], input[type=radio] { width: auto; }
+button, .btn, input[type=submit] {
+  display: inline-block; font: inherit; font-weight: 600; cursor: pointer;
+  background: var(--ink); color: var(--bg); border: 1px solid var(--ink);
+  border-radius: 8px; padding: .55rem 1.1rem; text-decoration: none;
+  transition: opacity .12s ease;
+}
+button:hover, .btn:hover, input[type=submit]:hover { opacity: .85; }
+.btn-ghost { background: transparent; color: var(--ink); border-color: var(--line-2); }
+
+/* ---- tables ------------------------------------------------------------ */
+table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .92rem; }
+th, td { padding: .55rem .7rem; text-align: left; border-bottom: 1px solid var(--line); }
+th { color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; font-size: .72rem; }
+tr:hover td { background: rgba(255,255,255,0.02); }
+
+/* ---- code / flags ------------------------------------------------------ */
+code, kbd, pre, .mono { font-family: var(--mono); }
+code { background: var(--panel-2); border: 1px solid var(--line); padding: .08rem .35rem; border-radius: 5px; font-size: .88em; }
+pre, .rendered {
+  background: var(--bg-2); border: 1px solid var(--line);
+  border-radius: 8px; padding: 1rem; overflow: auto; white-space: pre-wrap;
+}
+.flag { color: var(--ok); }
+
+/* ---- messages ---------------------------------------------------------- */
+.err, .error { color: var(--err); }
+.ok, .success { color: var(--ok); }
+.note { color: var(--muted); font-size: .9rem; }
+
+/* ---- footer ------------------------------------------------------------ */
+.sx-foot {
+  max-width: 960px; margin: 3rem auto 2rem; padding: 1.3rem 1.2rem 0;
+  border-top: 1px solid var(--line);
+  display: flex; align-items: center; gap: .7rem; flex-wrap: wrap;
+  color: var(--faint); font-size: .8rem;
+}
+.sx-foot .mark {
+  display: inline-grid; place-items: center; width: 18px; height: 18px;
+  background: var(--ink); color: var(--bg); font-weight: 800; font-size: .55rem;
+  border-radius: 3px; letter-spacing: .02em;
+}
+.sx-foot a { color: var(--muted); text-decoration: none; }
+.sx-foot a:hover { color: var(--ink); }
+.sx-foot .sep { color: var(--line-2); }

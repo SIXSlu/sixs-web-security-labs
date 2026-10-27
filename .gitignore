@@ -1,0 +1,44 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+
+# ---- Node ----
+node_modules/
+npm-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ---- Java / Maven / Gradle ----
+target/
+build/
+.gradle/
+*.class
+*.jar
+*.war
+
+# ---- Databases / lab runtime artifacts ----
+*.db
+*.sqlite
+*.sqlite3
+
+# ---- Editors / OS ----
+.idea/
+.vscode/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# ---- Local env / secrets ----
+.env
+*.local
+
+# ---- Instructor-only: not for the public repo ----
+# Full walkthroughs and reference exploit code live here. Kept locally,
+# never committed. (Student exploits/ workspaces are tracked; solutions are not.)
+solutions/

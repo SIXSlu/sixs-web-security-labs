@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= report.title %></title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <nav class="sx-nav">
+    <a class="sx-brand" href="#"><span class="mark">SX</span> SIXS&nbsp;Labs</a>
+    <a class="sx-app" href="/">ReportSmith</a>
+    <span class="sx-tag">incidents</span>
+  </nav>
+  <main class="sx-main">
+    <h1><%= report.title %><span class="sub">prepared for <%= user %></span></h1>
+    <div class="card">
+      <ul>
+        <% report.rows.forEach(r => { %>
+          <li><strong><%= r[0] %></strong> (<%= r[1] %>): <%= r[2] %></li>
+        <% }); %>
+      </ul>
+    </div>
+  </main>
+  <footer class="sx-foot"><span class="mark">SX</span> A SIXS security training lab <span class="sep">·</span> ReportSmith v2.3.1 <span class="sep">·</span> patch notes: known issues are now features</footer>
+</body>
+</html>

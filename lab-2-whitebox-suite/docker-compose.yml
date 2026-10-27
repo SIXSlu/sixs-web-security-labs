@@ -1,0 +1,58 @@
+name: sixs-lab2
+
+services:
+
+  # ------------------------------------------------------------------
+  # Challenge 1: FleetLedger vessel registry (Java / Spring Boot + PostgreSQL)
+  # ------------------------------------------------------------------
+  fleetledger-db:
+    build: ./fleetledger/db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - flaghashes:/flaghashes
+    networks: [fleetledger-net]
+    restart: unless-stopped
+
+  fleetledger:
+    build: ./fleetledger
+    ports:
+      - "8084:8080"   # HTTP
+      - "18001:8000"   # JDWP (optional, for debugging your own exploits)
+    depends_on:
+      - fleetledger-db
+    networks: [fleetledger-net]
+    restart: unless-stopped
+
+  # ------------------------------------------------------------------
+  # Challenge 2: CaseForge support desk (Python / Flask + Jinja2)
+  # ------------------------------------------------------------------
+  caseforge:
+    build: ./caseforge
+    ports:
+      - "8085:5000"
+    volumes:
+      - flaghashes:/flaghashes
+    networks: [caseforge-net]
+    restart: unless-stopped
+
+  # ------------------------------------------------------------------
+  # Challenge 3: PrintBay print-shop CMS (PHP 8 / Apache + SQLite)
+  # ------------------------------------------------------------------
+  printbay:
+    build: ./printbay
+    ports:
+      - "8086:80"
+    volumes:
+      - flaghashes:/flaghashes
+    networks: [printbay-net]
+    restart: unless-stopped
+
+networks:
+  fleetledger-net:
+  caseforge-net:
+  printbay-net:
+
+volumes:
+  flaghashes:

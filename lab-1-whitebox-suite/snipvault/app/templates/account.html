@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SnipVault — account</title>
+  <link rel="stylesheet" href="/static/sixs.css">
+</head>
+<body>
+  <nav class="sx-nav">
+    <a class="sx-brand" href="#"><span class="mark">SX</span> SIXS&nbsp;Labs</a>
+    <a class="sx-app" href="/">SnipVault</a>
+    <div class="links"><a href="{{ url_for('logout') }}">Logout</a></div>
+  </nav>
+  <main class="sx-main">
+    <h1>Logged in as {{ username }}</h1>
+    <div class="card">
+      <h2>Your note</h2>
+      <pre>{{ note }}</pre>
+      <form method="post" action="{{ url_for('save_note') }}">
+        <textarea name="note" rows="5">{{ note }}</textarea><br>
+        <button>Save note</button>
+      </form>
+    </div>
+  </main>
+  <footer class="sx-foot"><span class="mark">SX</span> A SIXS security training lab <span class="sep">·</span> hack the planet 🌍 (localhost counts as a planet)</footer>
+</body>
+</html>

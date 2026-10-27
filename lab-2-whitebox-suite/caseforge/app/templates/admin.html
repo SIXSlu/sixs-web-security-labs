@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}dashboard{% endblock %}
+{% block content %}
+<p class="note">Signed in as <b>{{ user["name"] }}</b> ({{ user["role"] }}) — <a href="/logout">sign out</a></p>
+<div class="card">
+  <p class="note" style="margin-top:0">MOTD banner</p>
+  <p><b>{{ motd }}</b></p>
+</div>
+<h2>Reply templates</h2>
+<div class="card">
+  <table>
+    <tr><th>id</th><th>name</th><th></th></tr>
+    {% for t in templates %}
+    <tr>
+      <td>{{ t["id"] }}</td>
+      <td>{{ t["name"] }}</td>
+      <td><a href="/admin/templates/{{ t["id"] }}">edit</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

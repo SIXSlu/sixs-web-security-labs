@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}template editor{% endblock %}
+{% block content %}
+<p class="note"><a href="/admin">&larr; back to dashboard</a></p>
+<h2>Template #{{ tpl["id"] }}</h2>
+<div class="card">
+  <form method="post" action="/admin/templates/{{ tpl["id"] }}">
+    <textarea name="body" rows="12">{{ tpl["body"] }}</textarea>
+    <br>
+    <button type="submit">Save</button>
+  </form>
+  <form method="post" action="/admin/templates/{{ tpl["id"] }}/preview" style="margin-top:.8rem">
+    <button type="submit" class="btn-ghost">Preview</button>
+  </form>
+</div>
+{% if preview is defined %}
+<h2>Preview</h2>
+<pre class="rendered">{{ preview }}</pre>
+{% endif %}
+{% endblock %}

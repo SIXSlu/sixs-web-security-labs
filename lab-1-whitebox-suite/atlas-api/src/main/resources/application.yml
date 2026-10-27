@@ -1,0 +1,10 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://atlas-db:5432/atlas
+    username: atlas
+    password: atlas-dev-2026
+  jackson:
+    default-property-inclusion: non_null

@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: fleetledger
+  datasource:
+    url: jdbc:postgresql://fleetledger-db:5432/fleet
+    username: fleet
+    password: fleet-dev-2026
+    hikari:
+      maximum-pool-size: 8
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO

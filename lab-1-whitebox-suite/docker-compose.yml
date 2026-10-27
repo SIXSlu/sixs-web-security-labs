@@ -1,0 +1,62 @@
+name: sixs-lab1
+
+services:
+
+  # ------------------------------------------------------------------
+  # Challenge 1: ATLAS asset registry (Java / Spring Boot + PostgreSQL)
+  # ------------------------------------------------------------------
+  atlas-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./atlas-api/db/01-init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+      - ./atlas-api/db/run.sh:/run.sh:ro
+      - ./atlas-api/db/zz-verify.sh:/docker-entrypoint-initdb.d/zz-verify.sh:ro
+      - flaghashes:/flaghashes
+    entrypoint: ["/bin/sh", "/run.sh"]
+    networks: [atlas-net]
+    restart: unless-stopped
+
+  atlas-api:
+    build: ./atlas-api
+    ports:
+      - "8081:8080"    # HTTP
+      - "18000:8000"   # JDWP (optional, for debugging your own exploits)
+    depends_on:
+      - atlas-db
+    networks: [atlas-net]
+    restart: unless-stopped
+
+  # ------------------------------------------------------------------
+  # Challenge 2: SnipVault paste service (Python / Flask + pickle)
+  # ------------------------------------------------------------------
+  snipvault:
+    build: ./snipvault
+    ports:
+      - "8082:5000"
+    volumes:
+      - flaghashes:/flaghashes
+    networks: [snip-net]
+    restart: unless-stopped
+
+  # ------------------------------------------------------------------
+  # Challenge 3: ReportSmith reporting service (Node / Express + EJS)
+  # ------------------------------------------------------------------
+  reportsmith:
+    build: ./reportsmith
+    ports:
+      - "8083:3000"
+    volumes:
+      - flaghashes:/flaghashes
+    networks: [rs-net]
+    restart: unless-stopped
+
+networks:
+  atlas-net:
+  snip-net:
+  rs-net:
+
+volumes:
+  flaghashes:

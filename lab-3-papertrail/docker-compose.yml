@@ -1,0 +1,40 @@
+name: sixs-lab3
+
+services:
+
+  # ------------------------------------------------------------------
+  # Public target: PaperTrail document portal
+  # ------------------------------------------------------------------
+  papertrail:
+    build:
+      context: ./papertrail
+    ports:
+      - "8088:5000"    # the only published port in this lab
+    volumes:
+      - flaghashes:/flaghashes
+    networks:
+      - front
+      - back
+    restart: unless-stopped
+
+  # ------------------------------------------------------------------
+  # Internal intranet CMS. Not published, and the `back` network is
+  # marked internal: no route between it and the host, no outbound
+  # internet. If you can talk to it, SSRF did it.
+  # ------------------------------------------------------------------
+  intranet:
+    build:
+      context: ./intranet
+    volumes:
+      - flaghashes:/flaghashes
+    networks:
+      - back
+    restart: unless-stopped
+
+networks:
+  front:
+  back:
+    internal: true
+
+volumes:
+  flaghashes:

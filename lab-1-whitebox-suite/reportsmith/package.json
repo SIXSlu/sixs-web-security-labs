@@ -1,0 +1,13 @@
+{
+  "name": "reportsmith",
+  "version": "2.3.1",
+  "description": "ReportSmith - template-driven reporting service",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "ejs": "3.0.1",
+    "express": "4.19.2"
+  }
+}

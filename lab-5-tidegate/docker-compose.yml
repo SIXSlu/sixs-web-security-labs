@@ -1,0 +1,22 @@
+name: sixs-lab5
+
+services:
+
+  # ------------------------------------------------------------------
+  # TideGate — harbour EDI / customs manifest gateway. The only service
+  # in this lab and the only published port. One target, one fused
+  # chain: unauthenticated blind SQLi -> partner token -> XXE (LFI) ->
+  # XML field-mapping transform (RCE).
+  # ------------------------------------------------------------------
+  tidegate:
+    build:
+      context: .
+      dockerfile: tidegate/Dockerfile
+    ports:
+      - "8091:80"
+    volumes:
+      - flaghashes:/flaghashes
+    restart: unless-stopped
+
+volumes:
+  flaghashes:

@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    search:
+      jdbc-url: jdbc:postgresql://harbordock-db:5432/harbordock
+      username: appsearch
+      password: appsearch
+      driver-class-name: org.postgresql.Driver
+    stats:
+      jdbc-url: jdbc:postgresql://harbordock-db:5432/harbordock
+      username: appstats
+      password: appstats
+      driver-class-name: org.postgresql.Driver
+
+server:
+  error:
+    # The console surfaces stack traces for ops triage - it is an
+    # internal API build, debug flags shipped, nobody turned them off.
+    include-message: always
+    include-stacktrace: always
