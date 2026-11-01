@@ -134,6 +134,6 @@ of any kind.
 ---
 
 <div align="center">
-A <strong>SIXS</strong> joint. Built to be broken, so when it breaks it is
+A <strong>SIXS</strong> Project. Built to be broken, so when it breaks it is
 working as intended.
 </div>
