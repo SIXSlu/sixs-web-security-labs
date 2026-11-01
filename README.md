@@ -5,7 +5,8 @@
 This was me trying to prep myself for the infamous OSWE exam. To give myself a
 lightweight lab where I my own skills could trial, I built from scratch a set of
 challenges that trial variations of the exploitation techniques taught in the
-course.
+course. I extensively used GLM5.3 (to not spoil the surprises for myself) to build
+the challenges -- something I would recommend you doing as well (great fun!)
 
 A collection of deliberately vulnerable web applications for hands-on
 web-application security training - recon, source auditing, exploit
