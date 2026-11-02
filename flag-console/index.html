@@ -1,361 +1,911 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SIXS Flag Console</title>
-<style>
-:root{
-  --bg:#050607;--bg-2:#0c0e11;--panel:#121418;--panel-2:#171a1f;
-  --ink:#f1f3f5;--muted:#8a9199;--faint:#5a616a;
-  --line:rgba(255,255,255,.09);--line-2:rgba(255,255,255,.16);
-  --glow:rgba(255,255,255,.55);--ok:#7ee0a5;--err:#ff8a7a;--warn:#f5cf6b;
-  --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
-  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-}
-*{box-sizing:border-box}
-body{margin:0;font-family:var(--sans);font-size:15px;line-height:1.6;color:var(--ink);
-  background-color:var(--bg);min-height:100vh;
-  background-image:linear-gradient(var(--line) 1px,transparent 1px),
-    linear-gradient(90deg,var(--line) 1px,transparent 1px),
-    radial-gradient(1200px 600px at 70% -10%,rgba(255,255,255,.05),transparent 60%);
-  background-size:46px 46px,46px 46px,100% 100%;background-attachment:fixed;}
-a{color:var(--ink);text-underline-offset:3px}
-.nav{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:1.1rem;flex-wrap:wrap;
-  padding:.7rem 1.2rem;background:rgba(5,6,7,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
-.brand{display:inline-flex;align-items:center;gap:.55rem;font-weight:700;letter-spacing:.14em;
-  text-transform:uppercase;font-size:.82rem;color:var(--ink);text-decoration:none}
-.brand .mark{display:inline-grid;place-items:center;width:22px;height:22px;border:1px solid var(--line-2);
-  background:var(--ink);color:var(--bg);font-weight:800;font-size:.62rem;border-radius:4px}
-.app{font-weight:600;color:var(--ink);text-decoration:none;font-size:.95rem;padding-left:1.1rem;border-left:1px solid var(--line)}
-.tag{font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);
-  border:1px solid var(--line);border-radius:999px;padding:.1rem .5rem}
-.nav .spacer{margin-left:auto}
-.ghost{font:inherit;font-size:.82rem;color:var(--muted);background:transparent;border:1px solid var(--line-2);
-  border-radius:8px;padding:.4rem .8rem;cursor:pointer}
-.ghost:hover{color:var(--ink);border-color:var(--glow)}
-.wrap{max-width:900px;margin:2.2rem auto;padding:0 1.2rem}
-h1{font-size:1.7rem;margin:0 0 .3rem;letter-spacing:-.01em}
-.lede{color:var(--muted);margin:0 0 1.6rem;max-width:62ch}
-.summary{display:flex;align-items:center;gap:1.6rem;flex-wrap:wrap;
-  background:linear-gradient(180deg,var(--panel),var(--bg-2));border:1px solid var(--line);
-  border-radius:12px;padding:1.4rem 1.5rem;margin-bottom:1.1rem}
-.ring{--p:0;flex:0 0 auto;width:112px;height:112px;border-radius:50%;display:grid;place-items:center;
-  background:conic-gradient(var(--ink) calc(var(--p)*1%),rgba(255,255,255,.08) 0);}
-.ring .hole{width:84px;height:84px;border-radius:50%;background:var(--bg-2);border:1px solid var(--line);
-  display:grid;place-items:center;text-align:center}
-.ring .count{font-family:var(--mono);font-size:1.35rem;font-weight:700;line-height:1}
-.ring .of{font-family:var(--mono);font-size:.68rem;color:var(--muted);letter-spacing:.06em}
-.summary .meta{flex:1 1 220px;min-width:200px}
-.summary .meta h2{margin:0 0 .3rem;font-size:1.05rem}
-.summary .meta p{margin:0;color:var(--muted);font-size:.9rem}
-.summary.done .ring{background:conic-gradient(var(--ok) 100%,var(--ok) 0)}
-.summary.done .meta h2{color:var(--ok)}
-.mode{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--mono);font-size:.68rem;
-  letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--line-2);border-radius:999px;
-  padding:.12rem .6rem;color:var(--muted);margin-bottom:1.6rem}
-.mode .d{width:7px;height:7px;border-radius:50%;background:var(--faint)}
-.mode.live{color:var(--ok);border-color:rgba(126,224,165,.4)} .mode.live .d{background:var(--ok)}
-.lab{background:linear-gradient(180deg,var(--panel),var(--bg-2));border:1px solid var(--line);
-  border-radius:12px;margin:1rem 0;overflow:hidden}
-.lab > header{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;padding:1rem 1.3rem;border-bottom:1px solid var(--line)}
-.lab > header .title{font-weight:600}
-.lab > header .title a{text-decoration:none}.lab > header .title a:hover{text-decoration:underline}
-.lab .pill{margin-left:auto;font-family:var(--mono);font-size:.72rem;color:var(--muted);
-  border:1px solid var(--line-2);border-radius:999px;padding:.15rem .6rem;white-space:nowrap}
-.lab .pill.full{color:var(--ok);border-color:rgba(126,224,165,.4)}
-.group{padding:.4rem 1.3rem 1rem}
-.group h3{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:1rem 0 .4rem;font-weight:600}
-.row{display:grid;grid-template-columns:1.1rem 1fr minmax(0,16rem);gap:.7rem;align-items:center;
-  padding:.45rem 0;border-bottom:1px dashed var(--line)}
-.row:last-child{border-bottom:none}
-.row .dot{width:1.1rem;height:1.1rem;border-radius:50%;border:1px solid var(--line-2);display:grid;
-  place-items:center;font-size:.7rem;color:var(--bg);background:transparent;transition:.15s}
-.row.ok .dot{background:var(--ok);border-color:var(--ok)}
-.row.rejected .dot{background:var(--warn);border-color:var(--warn)}
-.row.invalid .dot{background:var(--err);border-color:var(--err)}
-.row.checking .dot{color:var(--muted);background:transparent}
-.row .label{font-size:.9rem;color:var(--ink)}
-.row.ok .label{color:var(--muted)}
-.row input{width:100%;font:inherit;font-family:var(--mono);font-size:.82rem;color:var(--ink);
-  background:var(--bg-2);border:1px solid var(--line-2);border-radius:8px;padding:.4rem .6rem}
-.row input::placeholder{color:var(--faint)}
-.row input:focus{outline:none;border-color:var(--glow);box-shadow:0 0 0 3px rgba(255,255,255,.08)}
-.row.ok input{border-color:rgba(126,224,165,.45);color:var(--ok)}
-.row.rejected input{border-color:rgba(245,207,107,.5)}
-.row.invalid input{border-color:var(--err)}
-.hint{grid-column:2/4;font-family:var(--mono);font-size:.7rem;margin-top:-.1rem}
-.hint.rejected{color:var(--warn)} .hint.invalid{color:var(--err)} .hint.pending{color:var(--faint)}
-.foot{margin:2.6rem auto 2rem;padding:1.2rem 1.2rem 0;border-top:1px solid var(--line);
-  display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;color:var(--faint);font-size:.8rem;max-width:900px}
-.foot .mark{display:inline-grid;place-items:center;width:18px;height:18px;background:var(--ink);color:var(--bg);
-  font-weight:800;font-size:.55rem;border-radius:3px}
-.foot a{color:var(--muted);text-decoration:none}.foot a:hover{color:var(--ink)}
-.foot .sep{color:var(--line-2)}
-@media(max-width:560px){.row{grid-template-columns:1.1rem 1fr}.row input{grid-column:2/3}.hint{grid-column:2/3}}
-</style>
-</head>
-<body>
-<nav class="nav">
-  <a class="brand" href="#" title="SIXS Labs — stay curious, stay caffeinated"><span class="mark">SX</span> SIXS&nbsp;Labs</a>
-  <a class="app" id="repoReadme" href="../README.md">Flag Console</a>
-  <span class="tag">student progress</span>
-  <span class="spacer"></span>
-  <button class="ghost" id="reset" type="button">Reset progress</button>
-</nav>
-
-<main class="wrap">
-  <h1>Flag Console</h1>
-  <p class="lede">Paste each <code>FLAG{â¦}</code> as you capture it. When this page is served by the
-  lab verifier it checks each flag against the live target for real (yes/no only — the flag itself
-  never leaves the server). Opened on its own it falls back to a format-checked tracker. Progress is
-  saved in this browser.</p>
-
-  <span class="mode" id="mode"><span class="d"></span><span id="modeText">self-graded tracker</span></span>
-
-  <section class="summary" id="summary" aria-live="polite">
-    <div class="ring" id="ring"><div class="hole"><div><span class="count" id="count">0</span><div class="of">/ <span id="total">0</span></div></div></div></div>
-    <div class="meta">
-      <h2 id="summaryTitle">0 flags captured</h2>
-      <p id="summarySub">Work through the labs and drop your flags here.</p>
-    </div>
-  </section>
-
-  <div id="labs"></div>
-</main>
-
-<footer class="foot">
-  <span class="mark">SX</span> A SIXS security training lab
-  <span class="sep">·</span> hack the planet 🌍 (localhost counts as a planet)
-</footer>
-
-<script>
-const LABS = [
-  { id:"lab1", name:"Lab 1 — White-Box Suite I", href:"../lab-1-whitebox-suite/README.md", tag:"white-box",
-    groups:[
-      {name:"ATLAS (Java / PostgreSQL)", flags:[
-        {id:"l1-atlas-1",label:"FLAG 1 — auth bypass (reset-token PRNG)"},
-        {id:"l1-atlas-2",label:"FLAG 2 — blind SQLi (timing oracle)"},
-        {id:"l1-atlas-3",label:"FLAG 3 — SQLi â RCE"},
-      ]},
-      {name:"SnipVault (Python / pickle)", flags:[
-        {id:"l1-snip-1",label:"FLAG 1 — LFI (config leak)"},
-        {id:"l1-snip-2",label:"FLAG 2 — pickle deserialization â RCE"},
-      ]},
-      {name:"ReportSmith (Node / EJS)", flags:[
-        {id:"l1-rs-1",label:"FLAG 1 — prototype pollution (authz flip)"},
-        {id:"l1-rs-2",label:"FLAG 2 — pollution gadget â RCE"},
-      ]},
-    ]},
-  { id:"lab2", name:"Lab 2 — White-Box Suite II", href:"../lab-2-whitebox-suite/README.md", tag:"white-box",
-    groups:[
-      {name:"FleetLedger (Java / PostgreSQL)", flags:[
-        {id:"l2-fl-1",label:"FLAG 1 — filter bypass + UNION extraction"},
-        {id:"l2-fl-2",label:"FLAG 2 — time-based blind SQLi"},
-        {id:"l2-fl-3",label:"FLAG 3 — SQLi â RCE via UDF"},
-      ]},
-      {name:"CaseForge (Python / Jinja2)", flags:[
-        {id:"l2-cf-1",label:"FLAG 1 — magic-link token prediction"},
-        {id:"l2-cf-2",label:"FLAG 2 — SSTI behind a character filter"},
-      ]},
-      {name:"PrintBay (PHP / SQLite)", flags:[
-        {id:"l2-pb-1",label:"FLAG 1 — LFI â config leak"},
-        {id:"l2-pb-2",label:"FLAG 2 — php://filter chain â RCE"},
-        {id:"l2-pb-3",label:"FLAG 3 — restricted eval bypass"},
-      ]},
-    ]},
-  { id:"lab3", name:"Lab 3 — PaperTrail (Boss Lab I)", href:"../lab-3-papertrail/README.md", tag:"fused chain",
-    groups:[{ name:"PaperTrail portal â intranet", flags:[
-      {id:"l3-1",label:"FLAG 1 — PRNG token prediction â admin takeover"},
-      {id:"l3-2",label:"FLAG 2 — SSRF pivot into the intranet"},
-      {id:"l3-3",label:"FLAG 3 — SSTI â code execution on the intranet"},
-    ]}]},
-  { id:"lab4", name:"Lab 4 — HarborDock + DockOps (Boss Lab II)", href:"../lab-4-harbordock/README.md", tag:"fused chain",
-    groups:[{ name:"HarborDock API â DockOps console", flags:[
-      {id:"l4-1",label:"FLAG 1 — search endpoint: filter bypass + UNION"},
-      {id:"l4-2",label:"FLAG 2 — stats endpoint: error-based extraction"},
-      {id:"l4-3",label:"FLAG 3 — prototype pollution â RCE"},
-    ]}]},
-  { id:"lab5", name:"Lab 5 — TideGate (Boss Lab III)", href:"../lab-5-tidegate/README.md", tag:"fused chain",
-    groups:[{ name:"TideGate manifest gateway", flags:[
-      {id:"l5-1",label:"FLAG 1 — unauthenticated blind SQLi (credential lift)"},
-      {id:"l5-2",label:"FLAG 2 — XXE â file read (LFI)"},
-      {id:"l5-3",label:"FLAG 3 — XML mapping sheet → RCE"},
-    ]}]},
-  { id:"lab6", name:"Lab 6 — White-Box Suite III", href:"../lab-6-whitebox-suite/README.md", tag:"white-box",
-    groups:[
-      {name:"FareDesk (Perl / Mojolicious)", flags:[
-        {id:"l6-fare-1",label:"FLAG 1 — signed-session forgery (committed secret)"},
-        {id:"l6-fare-2",label:"FLAG 2 — string eval behind a name blocklist"},
-        {id:"l6-fare-3",label:"FLAG 3 — two-arg open pipe → blind RCE"},
-      ]},
-      {name:"TrackSide (Perl / regex + YAML)", flags:[
-        {id:"l6-track-1",label:"FLAG 1 — regex code injection (?{ ... })"},
-        {id:"l6-track-2",label:"FLAG 2 — YAML deserialization → DESTROY gadget RCE"},
-      ]},
-      {name:"SignalBox (Perl / Mojolicious)", flags:[
-        {id:"l6-sig-1",label:"FLAG 1 — two-arg open read-mode command pipe"},
-        {id:"l6-sig-2",label:"FLAG 2 — string-form shell injection (qx)"},
-      ]},
-      {name:"CrewRoom (Node / Express + admin bot)", flags:[
-        {id:"l6-crew-1",label:"FLAG 1 — stored XSS → admin tap hijack"},
-        {id:"l6-crew-2",label:"FLAG 2 — prototype pollution → shell-mode archiver"},
-      ]},
-    ]},
-];
-
-const KEY = "sixs-flag-console-v1";
-const FLAG_RE = /^FLAG\{[^}\s][^}]*\}$/i;
-
-function load(){ try{ return JSON.parse(localStorage.getItem(KEY)) || {}; }catch(e){ return {}; } }
-function save(s){ try{ localStorage.setItem(KEY, JSON.stringify(s)); }catch(e){} }
-let state = load();
-let VERIFY = false;              // true once the live verifier answers /health
-const vstatus = {};              // id -> "verified"|"rejected"|"pending"|"checking"|"error"
-const rowEls = {};               // id -> {row,input,dot,hint,lab}
-const timers = {};               // debounce timers
-
-const allFlags = LABS.flatMap(l => l.groups.flatMap(g => g.flags.map(f => f.id)));
-const TOTAL = allFlags.length;
-
-function fmtOK(id){ return FLAG_RE.test((state[id]||"").trim()); }
-function statusOf(id){
-  const v = (state[id]||"").trim();
-  if(!v) return "empty";
-  if(!FLAG_RE.test(v)) return "invalid";
-  if(!VERIFY) return "ok";                 // tracker mode: valid format counts
-  return vstatus[id] || "checking";        // verify mode: oracle verdict
-}
-function counts(id){ const s = statusOf(id); return s === "ok"; }
-
-function render(){
-  document.getElementById("total").textContent = TOTAL;
-  const labsEl = document.getElementById("labs");
-  labsEl.innerHTML = "";
-  for(const lab of LABS){
-    const card = document.createElement("section");
-    card.className = "lab";
-    card.innerHTML =
-      `<header><span class="title"><a href="${lab.href}">${lab.name}</a></span>
-         <span class="tag">${lab.tag}</span><span class="pill" data-lab="${lab.id}"></span></header>`;
-    for(const g of lab.groups){
-      const gEl = document.createElement("div"); gEl.className = "group";
-      gEl.innerHTML = `<h3>${g.name}</h3>`;
-      for(const f of g.flags){
-        const row = document.createElement("div"); row.className = "row";
-        row.innerHTML =
-          `<span class="dot"></span><span class="label">${f.label}</span>
-           <input type="text" spellcheck="false" autocomplete="off" placeholder="FLAG{...}"
-                  aria-label="${f.label}" value="${(state[f.id]||"").replace(/"/g,"&quot;")}">
-           <span class="hint" hidden></span>`;
-        const input = row.querySelector("input");
-        rowEls[f.id] = { row, input, dot: row.querySelector(".dot"),
-                         hint: row.querySelector(".hint"), lab: lab.id };
-        input.addEventListener("input", () => {
-          const v = input.value.trim();
-          if(v) state[f.id] = v; else delete state[f.id];
-          save(state);
-          if(VERIFY && FLAG_RE.test(v)){
-            vstatus[f.id] = "checking"; paintRow(f.id);
-            clearTimeout(timers[f.id]);
-            timers[f.id] = setTimeout(() => verify(f.id), 350);
-          } else {
-            delete vstatus[f.id]; paintRow(f.id); refreshTotals();
-          }
-        });
-        gEl.appendChild(row);
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SIXS Flag Console</title>
+    <style>
+      :root {
+        --bg: #050607;
+        --bg-2: #0c0e11;
+        --panel: #121418;
+        --panel-2: #171a1f;
+        --ink: #f1f3f5;
+        --muted: #8a9199;
+        --faint: #5a616a;
+        --line: rgba(255, 255, 255, 0.09);
+        --line-2: rgba(255, 255, 255, 0.16);
+        --glow: rgba(255, 255, 255, 0.55);
+        --ok: #7ee0a5;
+        --err: #ff8a7a;
+        --warn: #f5cf6b;
+        --mono:
+          ui-monospace, "SFMono-Regular", Menlo, Consolas, "Liberation Mono",
+          monospace;
+        --sans:
+          ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
       }
-      card.appendChild(gEl);
-    }
-    labsEl.appendChild(card);
-    for(const f of lab.groups.flatMap(g=>g.flags)) paintRow(f.id);
-  }
-  refreshTotals();
-}
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: var(--sans);
+        font-size: 15px;
+        line-height: 1.6;
+        color: var(--ink);
+        background-color: var(--bg);
+        min-height: 100vh;
+        background-image:
+          linear-gradient(var(--line) 1px, transparent 1px),
+          linear-gradient(90deg, var(--line) 1px, transparent 1px),
+          radial-gradient(
+            1200px 600px at 70% -10%,
+            rgba(255, 255, 255, 0.05),
+            transparent 60%
+          );
+        background-size:
+          46px 46px,
+          46px 46px,
+          100% 100%;
+        background-attachment: fixed;
+      }
+      a {
+        color: var(--ink);
+        text-underline-offset: 3px;
+      }
+      .nav {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        gap: 1.1rem;
+        flex-wrap: wrap;
+        padding: 0.7rem 1.2rem;
+        background: rgba(5, 6, 7, 0.82);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--line);
+      }
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        font-size: 0.82rem;
+        color: var(--ink);
+        text-decoration: none;
+      }
+      .brand .mark {
+        display: inline-grid;
+        place-items: center;
+        width: 22px;
+        height: 22px;
+        border: 1px solid var(--line-2);
+        background: var(--ink);
+        color: var(--bg);
+        font-weight: 800;
+        font-size: 0.62rem;
+        border-radius: 4px;
+      }
+      .app {
+        font-weight: 600;
+        color: var(--ink);
+        text-decoration: none;
+        font-size: 0.95rem;
+        padding-left: 1.1rem;
+        border-left: 1px solid var(--line);
+      }
+      .tag {
+        font-family: var(--mono);
+        font-size: 0.66rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--faint);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 0.1rem 0.5rem;
+      }
+      .nav .spacer {
+        margin-left: auto;
+      }
+      .ghost {
+        font: inherit;
+        font-size: 0.82rem;
+        color: var(--muted);
+        background: transparent;
+        border: 1px solid var(--line-2);
+        border-radius: 8px;
+        padding: 0.4rem 0.8rem;
+        cursor: pointer;
+      }
+      .ghost:hover {
+        color: var(--ink);
+        border-color: var(--glow);
+      }
+      .wrap {
+        max-width: 900px;
+        margin: 2.2rem auto;
+        padding: 0 1.2rem;
+      }
+      h1 {
+        font-size: 1.7rem;
+        margin: 0 0 0.3rem;
+        letter-spacing: -0.01em;
+      }
+      .lede {
+        color: var(--muted);
+        margin: 0 0 1.6rem;
+        max-width: 62ch;
+      }
+      .summary {
+        display: flex;
+        align-items: center;
+        gap: 1.6rem;
+        flex-wrap: wrap;
+        background: linear-gradient(180deg, var(--panel), var(--bg-2));
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 1.4rem 1.5rem;
+        margin-bottom: 1.1rem;
+      }
+      .ring {
+        --p: 0;
+        flex: 0 0 auto;
+        width: 112px;
+        height: 112px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: conic-gradient(
+          var(--ink) calc(var(--p) * 1%),
+          rgba(255, 255, 255, 0.08) 0
+        );
+      }
+      .ring .hole {
+        width: 84px;
+        height: 84px;
+        border-radius: 50%;
+        background: var(--bg-2);
+        border: 1px solid var(--line);
+        display: grid;
+        place-items: center;
+        text-align: center;
+      }
+      .ring .count {
+        font-family: var(--mono);
+        font-size: 1.35rem;
+        font-weight: 700;
+        line-height: 1;
+      }
+      .ring .of {
+        font-family: var(--mono);
+        font-size: 0.68rem;
+        color: var(--muted);
+        letter-spacing: 0.06em;
+      }
+      .summary .meta {
+        flex: 1 1 220px;
+        min-width: 200px;
+      }
+      .summary .meta h2 {
+        margin: 0 0 0.3rem;
+        font-size: 1.05rem;
+      }
+      .summary .meta p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      .summary.done .ring {
+        background: conic-gradient(var(--ok) 100%, var(--ok) 0);
+      }
+      .summary.done .meta h2 {
+        color: var(--ok);
+      }
+      .mode {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-family: var(--mono);
+        font-size: 0.68rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        border: 1px solid var(--line-2);
+        border-radius: 999px;
+        padding: 0.12rem 0.6rem;
+        color: var(--muted);
+        margin-bottom: 1.6rem;
+      }
+      .mode .d {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--faint);
+      }
+      .mode.live {
+        color: var(--ok);
+        border-color: rgba(126, 224, 165, 0.4);
+      }
+      .mode.live .d {
+        background: var(--ok);
+      }
+      .lab {
+        background: linear-gradient(180deg, var(--panel), var(--bg-2));
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        margin: 1rem 0;
+        overflow: hidden;
+      }
+      .lab > header {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        flex-wrap: wrap;
+        padding: 1rem 1.3rem;
+        border-bottom: 1px solid var(--line);
+      }
+      .lab > header .title {
+        font-weight: 600;
+      }
+      .lab > header .title a {
+        text-decoration: none;
+      }
+      .lab > header .title a:hover {
+        text-decoration: underline;
+      }
+      .lab .pill {
+        margin-left: auto;
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        color: var(--muted);
+        border: 1px solid var(--line-2);
+        border-radius: 999px;
+        padding: 0.15rem 0.6rem;
+        white-space: nowrap;
+      }
+      .lab .pill.full {
+        color: var(--ok);
+        border-color: rgba(126, 224, 165, 0.4);
+      }
+      .group {
+        padding: 0.4rem 1.3rem 1rem;
+      }
+      .group h3 {
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        margin: 1rem 0 0.4rem;
+        font-weight: 600;
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 1.1rem 1fr minmax(0, 16rem);
+        gap: 0.7rem;
+        align-items: center;
+        padding: 0.45rem 0;
+        border-bottom: 1px dashed var(--line);
+      }
+      .row:last-child {
+        border-bottom: none;
+      }
+      .row .dot {
+        width: 1.1rem;
+        height: 1.1rem;
+        border-radius: 50%;
+        border: 1px solid var(--line-2);
+        display: grid;
+        place-items: center;
+        font-size: 0.7rem;
+        color: var(--bg);
+        background: transparent;
+        transition: 0.15s;
+      }
+      .row.ok .dot {
+        background: var(--ok);
+        border-color: var(--ok);
+      }
+      .row.rejected .dot {
+        background: var(--warn);
+        border-color: var(--warn);
+      }
+      .row.invalid .dot {
+        background: var(--err);
+        border-color: var(--err);
+      }
+      .row.checking .dot {
+        color: var(--muted);
+        background: transparent;
+      }
+      .row .label {
+        font-size: 0.9rem;
+        color: var(--ink);
+      }
+      .row.ok .label {
+        color: var(--muted);
+      }
+      .row input {
+        width: 100%;
+        font: inherit;
+        font-family: var(--mono);
+        font-size: 0.82rem;
+        color: var(--ink);
+        background: var(--bg-2);
+        border: 1px solid var(--line-2);
+        border-radius: 8px;
+        padding: 0.4rem 0.6rem;
+      }
+      .row input::placeholder {
+        color: var(--faint);
+      }
+      .row input:focus {
+        outline: none;
+        border-color: var(--glow);
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08);
+      }
+      .row.ok input {
+        border-color: rgba(126, 224, 165, 0.45);
+        color: var(--ok);
+      }
+      .row.rejected input {
+        border-color: rgba(245, 207, 107, 0.5);
+      }
+      .row.invalid input {
+        border-color: var(--err);
+      }
+      .hint {
+        grid-column: 2/4;
+        font-family: var(--mono);
+        font-size: 0.7rem;
+        margin-top: -0.1rem;
+      }
+      .hint.rejected {
+        color: var(--warn);
+      }
+      .hint.invalid {
+        color: var(--err);
+      }
+      .hint.pending {
+        color: var(--faint);
+      }
+      .foot {
+        margin: 2.6rem auto 2rem;
+        padding: 1.2rem 1.2rem 0;
+        border-top: 1px solid var(--line);
+        display: flex;
+        gap: 0.6rem;
+        align-items: center;
+        flex-wrap: wrap;
+        color: var(--faint);
+        font-size: 0.8rem;
+        max-width: 900px;
+      }
+      .foot .mark {
+        display: inline-grid;
+        place-items: center;
+        width: 18px;
+        height: 18px;
+        background: var(--ink);
+        color: var(--bg);
+        font-weight: 800;
+        font-size: 0.55rem;
+        border-radius: 3px;
+      }
+      .foot a {
+        color: var(--muted);
+        text-decoration: none;
+      }
+      .foot a:hover {
+        color: var(--ink);
+      }
+      .foot .sep {
+        color: var(--line-2);
+      }
+      @media (max-width: 560px) {
+        .row {
+          grid-template-columns: 1.1rem 1fr;
+        }
+        .row input {
+          grid-column: 2/3;
+        }
+        .hint {
+          grid-column: 2/3;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="nav">
+      <a
+        class="brand"
+        href="#"
+        title="SIXS Labs — stay curious, stay caffeinated"
+        ><span class="mark">SX</span> SIXS&nbsp;Labs</a
+      >
+      <a class="app" id="repoReadme" href="../README.md">Flag Console</a>
+      <span class="tag">student progress</span>
+      <span class="spacer"></span>
+      <button class="ghost" id="reset" type="button">Reset progress</button>
+    </nav>
 
-const DOT = { ok:"â", rejected:"â", invalid:"!", checking:"â¦", empty:"", pending:"" };
-const HINT = { rejected:"not the current flag", invalid:"not a FLAG{â¦} value",
-               pending:"target not reporting yet", error:"verifier unreachable" };
+    <main class="wrap">
+      <h1>Flag Console</h1>
+      <p class="lede">
+        Paste each <code>FLAG{*}</code> as you capture it. When this page is
+        served by the lab verifier it checks each flag against the live target
+        for real (yes/no only — the flag itself never leaves the server). Opened
+        on its own it falls back to a format-checked tracker. Progress is saved
+        in this browser.
+      </p>
 
-function paintRow(id){
-  const el = rowEls[id]; if(!el) return;
-  const s = statusOf(id);
-  el.row.className = "row" + (s==="empty" ? "" : " " + s);
-  el.dot.textContent = DOT[s] || "";
-  const h = HINT[s];
-  if(h){ el.hint.hidden = false; el.hint.textContent = h; el.hint.className = "hint " + s; }
-  else { el.hint.hidden = true; }
-  const pill = document.querySelector(`.pill[data-lab="${el.lab}"]`);
-  if(pill){
-    const lf = LABS.find(l=>l.id===el.lab).groups.flatMap(g=>g.flags);
-    const n = lf.filter(f=>counts(f.id)).length;
-    pill.textContent = `${n} / ${lf.length}`;
-    pill.classList.toggle("full", n===lf.length);
-  }
-}
+      <span class="mode" id="mode"
+        ><span class="d"></span
+        ><span id="modeText">self-graded tracker</span></span
+      >
 
-function refreshTotals(){
-  const got = allFlags.filter(counts).length;
-  document.getElementById("count").textContent = got;
-  document.getElementById("ring").style.setProperty("--p", TOTAL ? Math.round(got/TOTAL*100) : 0);
-  const sum = document.getElementById("summary");
-  const title = document.getElementById("summaryTitle");
-  const sub = document.getElementById("summarySub");
-  if(got===TOTAL && TOTAL>0){
-    sum.classList.add("done"); title.textContent = "All flags captured";
-    sub.textContent = VERIFY ? "Every flag verified against the live targets. Clean run."
-                             : "Every chain finished. Clean run — nicely done.";
-  } else {
-    sum.classList.remove("done");
-    title.textContent = `${got} flag${got===1?"":"s"} ${VERIFY?"verified":"captured"}`;
-    sub.textContent = `${TOTAL-got} to go across ${LABS.length} labs.`;
-  }
-}
+      <section class="summary" id="summary" aria-live="polite">
+        <div class="ring" id="ring">
+          <div class="hole">
+            <div>
+              <span class="count" id="count">0</span>
+              <div class="of">/ <span id="total">0</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="meta">
+          <h2 id="summaryTitle">0 flags captured</h2>
+          <p id="summarySub">Work through the labs and drop your flags here.</p>
+        </div>
+      </section>
 
-async function verify(id){
-  const flag = (state[id]||"").trim();
-  if(!FLAG_RE.test(flag)){ delete vstatus[id]; paintRow(id); refreshTotals(); return; }
-  try{
-    const r = await fetch("verify", { method:"POST",
-      headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ id, flag }) });
-    const j = await r.json();
-    vstatus[id] = j.ok ? "ok" : (j.known ? "rejected" : "pending");
-  } catch(e){ vstatus[id] = "error"; }
-  paintRow(id); refreshTotals();
-}
+      <div id="labs"></div>
+    </main>
 
-async function detectVerifier(){
-  try{
-    const r = await fetch("health", { cache:"no-store" });
-    if(!r.ok) return;
-    const j = await r.json();
-    if(j && j.ok){
-      VERIFY = true;
-      const m = document.getElementById("mode");
-      m.classList.add("live");
-      document.getElementById("modeText").textContent = "live verification";
-      // Live mode: the verifier serves the repo and lab READMEs itself, so
-      // the file-relative "../<lab>/README.md" links become same-origin
-      // absolute paths instead of dead 404s on this service.
-      document.getElementById("repoReadme").href = "/README.md";
-      document.querySelectorAll('a[href^="../lab-"]').forEach(a => {
-        a.href = "/" + a.getAttribute("href").replace("../", "");
+    <footer class="foot">
+      <span class="mark">SX</span> A SIXS security training lab
+      <span class="sep">·</span> hack the planet 🌍 (localhost counts as a
+      planet)
+    </footer>
+
+    <script>
+      const LABS = [
+        {
+          id: "lab1",
+          name: "Lab 1 — White-Box Suite I",
+          href: "../lab-1-whitebox-suite/README.md",
+          tag: "white-box",
+          groups: [
+            {
+              name: "ATLAS (Java / PostgreSQL)",
+              flags: [
+                {
+                  id: "l1-atlas-1",
+                  label: "FLAG 1 — auth bypass (reset-token PRNG)",
+                },
+                {
+                  id: "l1-atlas-2",
+                  label: "FLAG 2 — blind SQLi (timing oracle)",
+                },
+                { id: "l1-atlas-3", label: "FLAG 3 — SQLi * RCE" },
+              ],
+            },
+            {
+              name: "SnipVault (Python / pickle)",
+              flags: [
+                { id: "l1-snip-1", label: "FLAG 1 — LFI (config leak)" },
+                {
+                  id: "l1-snip-2",
+                  label: "FLAG 2 — pickle deserialization * RCE",
+                },
+              ],
+            },
+            {
+              name: "ReportSmith (Node / EJS)",
+              flags: [
+                {
+                  id: "l1-rs-1",
+                  label: "FLAG 1 — prototype pollution (authz flip)",
+                },
+                { id: "l1-rs-2", label: "FLAG 2 — pollution gadget * RCE" },
+              ],
+            },
+          ],
+        },
+        {
+          id: "lab2",
+          name: "Lab 2 — White-Box Suite II",
+          href: "../lab-2-whitebox-suite/README.md",
+          tag: "white-box",
+          groups: [
+            {
+              name: "FleetLedger (Java / PostgreSQL)",
+              flags: [
+                {
+                  id: "l2-fl-1",
+                  label: "FLAG 1 — filter bypass + UNION extraction",
+                },
+                { id: "l2-fl-2", label: "FLAG 2 — time-based blind SQLi" },
+                { id: "l2-fl-3", label: "FLAG 3 — SQLi * RCE via UDF" },
+              ],
+            },
+            {
+              name: "CaseForge (Python / Jinja2)",
+              flags: [
+                {
+                  id: "l2-cf-1",
+                  label: "FLAG 1 — magic-link token prediction",
+                },
+                {
+                  id: "l2-cf-2",
+                  label: "FLAG 2 — SSTI behind a character filter",
+                },
+              ],
+            },
+            {
+              name: "PrintBay (PHP / SQLite)",
+              flags: [
+                { id: "l2-pb-1", label: "FLAG 1 — LFI * config leak" },
+                { id: "l2-pb-2", label: "FLAG 2 — php://filter chain * RCE" },
+                { id: "l2-pb-3", label: "FLAG 3 — restricted eval bypass" },
+              ],
+            },
+          ],
+        },
+        {
+          id: "lab3",
+          name: "Lab 3 — PaperTrail (Boss Lab I)",
+          href: "../lab-3-papertrail/README.md",
+          tag: "fused chain",
+          groups: [
+            {
+              name: "PaperTrail portal * intranet",
+              flags: [
+                {
+                  id: "l3-1",
+                  label: "FLAG 1 — PRNG token prediction * admin takeover",
+                },
+                { id: "l3-2", label: "FLAG 2 — SSRF pivot into the intranet" },
+                {
+                  id: "l3-3",
+                  label: "FLAG 3 — SSTI * code execution on the intranet",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "lab4",
+          name: "Lab 4 — HarborDock + DockOps (Boss Lab II)",
+          href: "../lab-4-harbordock/README.md",
+          tag: "fused chain",
+          groups: [
+            {
+              name: "HarborDock API * DockOps console",
+              flags: [
+                {
+                  id: "l4-1",
+                  label: "FLAG 1 — search endpoint: filter bypass + UNION",
+                },
+                {
+                  id: "l4-2",
+                  label: "FLAG 2 — stats endpoint: error-based extraction",
+                },
+                { id: "l4-3", label: "FLAG 3 — prototype pollution * RCE" },
+              ],
+            },
+          ],
+        },
+        {
+          id: "lab5",
+          name: "Lab 5 — TideGate (Boss Lab III)",
+          href: "../lab-5-tidegate/README.md",
+          tag: "fused chain",
+          groups: [
+            {
+              name: "TideGate manifest gateway",
+              flags: [
+                {
+                  id: "l5-1",
+                  label:
+                    "FLAG 1 — unauthenticated blind SQLi (credential lift)",
+                },
+                { id: "l5-2", label: "FLAG 2 — XXE * file read (LFI)" },
+                { id: "l5-3", label: "FLAG 3 — XML mapping sheet → RCE" },
+              ],
+            },
+          ],
+        },
+        {
+          id: "lab6",
+          name: "Lab 6 — White-Box Suite III",
+          href: "../lab-6-whitebox-suite/README.md",
+          tag: "white-box",
+          groups: [
+            {
+              name: "FareDesk (Perl / Mojolicious)",
+              flags: [
+                {
+                  id: "l6-fare-1",
+                  label: "FLAG 1 — signed-session forgery (committed secret)",
+                },
+                {
+                  id: "l6-fare-2",
+                  label: "FLAG 2 — string eval behind a name blocklist",
+                },
+                {
+                  id: "l6-fare-3",
+                  label: "FLAG 3 — two-arg open pipe → blind RCE",
+                },
+              ],
+            },
+            {
+              name: "TrackSide (Perl / regex + YAML)",
+              flags: [
+                {
+                  id: "l6-track-1",
+                  label: "FLAG 1 — regex code injection (?{ ... })",
+                },
+                {
+                  id: "l6-track-2",
+                  label: "FLAG 2 — YAML deserialization → DESTROY gadget RCE",
+                },
+              ],
+            },
+            {
+              name: "SignalBox (Perl / Mojolicious)",
+              flags: [
+                {
+                  id: "l6-sig-1",
+                  label: "FLAG 1 — two-arg open read-mode command pipe",
+                },
+                {
+                  id: "l6-sig-2",
+                  label: "FLAG 2 — string-form shell injection (qx)",
+                },
+              ],
+            },
+            {
+              name: "CrewRoom (Node / Express + admin bot)",
+              flags: [
+                {
+                  id: "l6-crew-1",
+                  label: "FLAG 1 — stored XSS → admin tap hijack",
+                },
+                {
+                  id: "l6-crew-2",
+                  label: "FLAG 2 — prototype pollution → shell-mode archiver",
+                },
+              ],
+            },
+          ],
+        },
+      ];
+
+      const KEY = "sixs-flag-console-v1";
+      const FLAG_RE = /^FLAG\{[^}\s][^}]*\}$/i;
+
+      function load() {
+        try {
+          return JSON.parse(localStorage.getItem(KEY)) || {};
+        } catch (e) {
+          return {};
+        }
+      }
+      function save(s) {
+        try {
+          localStorage.setItem(KEY, JSON.stringify(s));
+        } catch (e) {}
+      }
+      let state = load();
+      let VERIFY = false; // true once the live verifier answers /health
+      const vstatus = {}; // id -> "verified"|"rejected"|"pending"|"checking"|"error"
+      const rowEls = {}; // id -> {row,input,dot,hint,lab}
+      const timers = {}; // debounce timers
+
+      const allFlags = LABS.flatMap((l) =>
+        l.groups.flatMap((g) => g.flags.map((f) => f.id)),
+      );
+      const TOTAL = allFlags.length;
+
+      function fmtOK(id) {
+        return FLAG_RE.test((state[id] || "").trim());
+      }
+      function statusOf(id) {
+        const v = (state[id] || "").trim();
+        if (!v) return "empty";
+        if (!FLAG_RE.test(v)) return "invalid";
+        if (!VERIFY) return "ok"; // tracker mode: valid format counts
+        return vstatus[id] || "checking"; // verify mode: oracle verdict
+      }
+      function counts(id) {
+        const s = statusOf(id);
+        return s === "ok";
+      }
+
+      function render() {
+        document.getElementById("total").textContent = TOTAL;
+        const labsEl = document.getElementById("labs");
+        labsEl.innerHTML = "";
+        for (const lab of LABS) {
+          const card = document.createElement("section");
+          card.className = "lab";
+          card.innerHTML = `<header><span class="title"><a href="${lab.href}">${lab.name}</a></span>
+         <span class="tag">${lab.tag}</span><span class="pill" data-lab="${lab.id}"></span></header>`;
+          for (const g of lab.groups) {
+            const gEl = document.createElement("div");
+            gEl.className = "group";
+            gEl.innerHTML = `<h3>${g.name}</h3>`;
+            for (const f of g.flags) {
+              const row = document.createElement("div");
+              row.className = "row";
+              row.innerHTML = `<span class="dot"></span><span class="label">${f.label}</span>
+           <input type="text" spellcheck="false" autocomplete="off" placeholder="FLAG{...}"
+                  aria-label="${f.label}" value="${(state[f.id] || "").replace(/"/g, "&quot;")}">
+           <span class="hint" hidden></span>`;
+              const input = row.querySelector("input");
+              rowEls[f.id] = {
+                row,
+                input,
+                dot: row.querySelector(".dot"),
+                hint: row.querySelector(".hint"),
+                lab: lab.id,
+              };
+              input.addEventListener("input", () => {
+                const v = input.value.trim();
+                if (v) state[f.id] = v;
+                else delete state[f.id];
+                save(state);
+                if (VERIFY && FLAG_RE.test(v)) {
+                  vstatus[f.id] = "checking";
+                  paintRow(f.id);
+                  clearTimeout(timers[f.id]);
+                  timers[f.id] = setTimeout(() => verify(f.id), 350);
+                } else {
+                  delete vstatus[f.id];
+                  paintRow(f.id);
+                  refreshTotals();
+                }
+              });
+              gEl.appendChild(row);
+            }
+            card.appendChild(gEl);
+          }
+          labsEl.appendChild(card);
+          for (const f of lab.groups.flatMap((g) => g.flags)) paintRow(f.id);
+        }
+        refreshTotals();
+      }
+
+      const DOT = {
+        ok: "*",
+        rejected: "*",
+        invalid: "!",
+        checking: "*",
+        empty: "",
+        pending: "",
+      };
+      const HINT = {
+        rejected: "not the current flag",
+        invalid: "not a FLAG{*} value",
+        pending: "target not reporting yet",
+        error: "verifier unreachable",
+      };
+
+      function paintRow(id) {
+        const el = rowEls[id];
+        if (!el) return;
+        const s = statusOf(id);
+        el.row.className = "row" + (s === "empty" ? "" : " " + s);
+        el.dot.textContent = DOT[s] || "";
+        const h = HINT[s];
+        if (h) {
+          el.hint.hidden = false;
+          el.hint.textContent = h;
+          el.hint.className = "hint " + s;
+        } else {
+          el.hint.hidden = true;
+        }
+        const pill = document.querySelector(`.pill[data-lab="${el.lab}"]`);
+        if (pill) {
+          const lf = LABS.find((l) => l.id === el.lab).groups.flatMap(
+            (g) => g.flags,
+          );
+          const n = lf.filter((f) => counts(f.id)).length;
+          pill.textContent = `${n} / ${lf.length}`;
+          pill.classList.toggle("full", n === lf.length);
+        }
+      }
+
+      function refreshTotals() {
+        const got = allFlags.filter(counts).length;
+        document.getElementById("count").textContent = got;
+        document
+          .getElementById("ring")
+          .style.setProperty(
+            "--p",
+            TOTAL ? Math.round((got / TOTAL) * 100) : 0,
+          );
+        const sum = document.getElementById("summary");
+        const title = document.getElementById("summaryTitle");
+        const sub = document.getElementById("summarySub");
+        if (got === TOTAL && TOTAL > 0) {
+          sum.classList.add("done");
+          title.textContent = "All flags captured";
+          sub.textContent = VERIFY
+            ? "Every flag verified against the live targets. Clean run."
+            : "Every chain finished. Clean run — nicely done.";
+        } else {
+          sum.classList.remove("done");
+          title.textContent = `${got} flag${got === 1 ? "" : "s"} ${VERIFY ? "verified" : "captured"}`;
+          sub.textContent = `${TOTAL - got} to go across ${LABS.length} labs.`;
+        }
+      }
+
+      async function verify(id) {
+        const flag = (state[id] || "").trim();
+        if (!FLAG_RE.test(flag)) {
+          delete vstatus[id];
+          paintRow(id);
+          refreshTotals();
+          return;
+        }
+        try {
+          const r = await fetch("verify", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id, flag }),
+          });
+          const j = await r.json();
+          vstatus[id] = j.ok ? "ok" : j.known ? "rejected" : "pending";
+        } catch (e) {
+          vstatus[id] = "error";
+        }
+        paintRow(id);
+        refreshTotals();
+      }
+
+      async function detectVerifier() {
+        try {
+          const r = await fetch("health", { cache: "no-store" });
+          if (!r.ok) return;
+          const j = await r.json();
+          if (j && j.ok) {
+            VERIFY = true;
+            const m = document.getElementById("mode");
+            m.classList.add("live");
+            document.getElementById("modeText").textContent =
+              "live verification";
+            // Live mode: the verifier serves the repo and lab READMEs itself, so
+            // the file-relative "../<lab>/README.md" links become same-origin
+            // absolute paths instead of dead 404s on this service.
+            document.getElementById("repoReadme").href = "/README.md";
+            document.querySelectorAll('a[href^="../lab-"]').forEach((a) => {
+              a.href = "/" + a.getAttribute("href").replace("../", "");
+            });
+            // re-check any flags already saved in this browser
+            await Promise.all(allFlags.filter(fmtOK).map(verify));
+            refreshTotals();
+          }
+        } catch (e) {
+          /* opened as a file:// — stay a tracker */
+        }
+      }
+
+      document.getElementById("reset").addEventListener("click", () => {
+        if (confirm("Clear all captured flags from this browser?")) {
+          state = {};
+          for (const k in vstatus) delete vstatus[k];
+          save(state);
+          render();
+        }
       });
-      // re-check any flags already saved in this browser
-      await Promise.all(allFlags.filter(fmtOK).map(verify));
-      refreshTotals();
-    }
-  } catch(e){ /* opened as a file:// — stay a tracker */ }
-}
 
-document.getElementById("reset").addEventListener("click", () => {
-  if(confirm("Clear all captured flags from this browser?")){
-    state = {}; for(const k in vstatus) delete vstatus[k]; save(state); render();
-  }
-});
-
-render();
-detectVerifier();
-</script>
-</body>
+      render();
+      detectVerifier();
+    </script>
+  </body>
 </html>
