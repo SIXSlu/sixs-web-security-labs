@@ -1,0 +1,10 @@
+#!/bin/sh
+# crewroom-backup - archive the crew wall for the daily depot handover.
+#
+# The stationmaster's console calls this helper with the archive tag to
+# use; the tool files the wall under /opt/crewroom/backups/ and prints a
+# confirmation line.
+name="${1:-crewroom}"
+dest="/opt/crewroom/backups/${name}-$(date +%s).tgz"
+mkdir -p /opt/crewroom/backups 2>/dev/null || true
+echo "crew wall archived as ${dest}"

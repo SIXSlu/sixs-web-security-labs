@@ -1,7 +1,7 @@
 # ---------------------------------------------------------------------------
 # SIXS Web Security Labs — central stack
 #
-# Brings up every container from all five labs at once. Each lab's own
+# Brings up every container from all six labs at once. Each lab's own
 # docker-compose.yml remains the source of truth and is pulled in via
 # `include:` below, so per-lab and all-in-one stay in sync.
 #
@@ -10,7 +10,7 @@
 #   docker compose logs -f           # follow startup
 #   docker compose down              # stop everything (flags re-roll on restart)
 #
-# Host ports are disjoint across labs (8081-8086, 8088, 8089-8091), so
+# Host ports are disjoint across labs (8081-8086, 8088-8095), so
 # all labs run side by side. Do not also run a lab's own compose at the same
 # time — the two projects would fight over the same host ports.
 #
@@ -25,6 +25,7 @@ include:
   - lab-3-papertrail/docker-compose.yml
   - lab-4-harbordock/docker-compose.yml
   - lab-5-tidegate/docker-compose.yml
+  - lab-6-whitebox-suite/docker-compose.yml
 
 services:
   # Flag verifier: serves the flag console and a yes/no verify oracle.

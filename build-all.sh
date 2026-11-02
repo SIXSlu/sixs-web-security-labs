@@ -30,6 +30,10 @@ build sixs-labs-provision      lab-4-harbordock/harbordock/db
 build sixs-labs-harbordock     lab-4-harbordock/harbordock
 build sixs-labs-dockops        lab-4-harbordock/dockops
 docker build $ALLOW -t sixs-labs-tidegate -f lab-5-tidegate/tidegate/Dockerfile lab-5-tidegate
+build sixs-labs-faredesk      lab-6-whitebox-suite/faredesk
+build sixs-labs-trackside     lab-6-whitebox-suite/trackside
+build sixs-labs-signalbox    lab-6-whitebox-suite/signalbox
+build sixs-labs-crewroom     lab-6-whitebox-suite/crewroom
 
 # atlas-db pulls postgres:16-alpine; compose fetches it on up.
 docker compose up -d

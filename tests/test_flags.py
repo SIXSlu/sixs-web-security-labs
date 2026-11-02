@@ -84,6 +84,17 @@ FLAGS = {
     "l5-1": dict(svc="tidegate", cmd="php -r \"echo (new PDO('sqlite:/opt/tidegate/tidegate.db'))->query(\\\"SELECT v FROM ops_secrets WHERE k='gateway_seal'\\\")->fetchColumn();\"", pat=r"FLAG\{tidegate_sqli_[0-9a-f]+\}"),
     "l5-2": dict(svc="tidegate", cmd="cat /opt/tidegate/flag_manifest.txt",                  pat=r"FLAG\{tidegate_xxe_[0-9a-f]+\}"),
     "l5-3": dict(svc="tidegate", root=True, cmd="cat /opt/tidegate/flag_seal.txt",           pat=r"FLAG\{tidegate_rce_[0-9a-f]+\}"),
+
+    # ---- Lab 6: whitebox suite (faredesk / trackside / signalbox / crewroom) ----
+    "l6-fare-1":  dict(svc="faredesk",  cmd="cat /opt/faredesk/ops_banner.txt",   pat=r"FLAG\{faredesk_session_[0-9a-f]+\}"),
+    "l6-fare-2":  dict(svc="faredesk",  cmd="cat /opt/faredesk/flag_eval.txt",    pat=r"FLAG\{faredesk_eval_[0-9a-f]+\}"),
+    "l6-fare-3":  dict(svc="faredesk",  root=True, cmd="cat /opt/faredesk/flag_seal.txt",   pat=r"FLAG\{faredesk_pipe_[0-9a-f]+\}"),
+    "l6-track-1": dict(svc="trackside", cmd="cat /opt/trackside/flag_regex.txt",  pat=r"FLAG\{trackside_regex_[0-9a-f]+\}"),
+    "l6-track-2": dict(svc="trackside", root=True, cmd="cat /opt/trackside/flag_seal.txt",   pat=r"FLAG\{trackside_yaml_[0-9a-f]+\}"),
+    "l6-sig-1":   dict(svc="signalbox", cmd="cat /opt/signalbox/board.conf",     pat=r"FLAG\{signalbox_open_[0-9a-f]+\}"),
+    "l6-sig-2":   dict(svc="signalbox", root=True, cmd="cat /opt/signalbox/flag_seal.txt",  pat=r"FLAG\{signalbox_shell_[0-9a-f]+\}"),
+    "l6-crew-1":  dict(svc="crewroom",  cmd="cat /opt/crewroom/briefing.txt",       pat=r"FLAG\{crewroom_token_[0-9a-f]+\}"),
+    "l6-crew-2":  dict(svc="crewroom",  root=True, cmd="cat /opt/crewroom/flag_seal.txt", pat=r"FLAG\{crewroom_pollution_[0-9a-f]+\}"),
 }
 
 
@@ -145,7 +156,7 @@ def panel_ids():
             html = f.read()
     except OSError:
         return None
-    return set(re.findall(r"\bl[1-5]-[a-z0-9-]+\b", html))
+    return set(re.findall(r"\bl[1-6]-[a-z0-9-]+\b", html))
 
 
 def check_one(fid):

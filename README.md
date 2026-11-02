@@ -52,6 +52,7 @@ one dark, one light, because the vulnerabilitys come in every theme:
 | [`lab-3-papertrail`](lab-3-papertrail)         | PaperTrail (Boss Lab I)                                 | White-box · fused chain | Python / Flask (portal + internal intranet)              | `8088`        |
 | [`lab-4-harbordock`](lab-4-harbordock)         | HarborDock + DockOps (Boss Lab II)                      | White-box · fused chain | Java/Spring+PostgreSQL · Node/Express+EJS                | `8089`-`8090` |
 | [`lab-5-tidegate`](lab-5-tidegate)             | TideGate (Boss Lab III)                                 | White-box · fused chain | PHP+SQLite (XML manifest gateway)                        | `8091`        |
+| [`lab-6-whitebox-suite`](lab-6-whitebox-suite) | White-Box Suite III - FareDesk · TrackSide · SignalBox · CrewRoom | White-box · 4 services | Perl/Mojolicious + SQLite, Node/Express + jsdom bot | `8092`-`8095` |
 
 Each lab has its own `README.md` with objectives, ground rules and a
 walkthrough of what every flag trains.
@@ -59,7 +60,7 @@ walkthrough of what every flag trains.
 ## Quick start
 
 **Everything at once.** A central [`docker-compose.yml`](docker-compose.yml) at
-the repository root brings up all five labs together (it pulls in each lab's
+the repository root brings up all six labs together (it pulls in each lab's
 own compose via `include`, so the two never drift). Ports are disjoint, so the
 whole range runs side by side:
 

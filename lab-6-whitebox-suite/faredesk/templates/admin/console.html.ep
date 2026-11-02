@@ -1,0 +1,27 @@
+% title 'FareDesk — staff console';
+<h1>Staff console</h1>
+<div class="sixs-card">
+  <h2>Ops banner</h2>
+  <pre><%= $banner %></pre>
+</div>
+
+<h2>Fare rules previewer</h2>
+<p class="sixs-dim">Preview fare-table arithmetic before it ships to the counters
+(bank-holiday rules are getting complicated).</p>
+<form method="post" action="/admin/formula" class="sixs-form">
+  <label>Formula
+    <input name="formula" placeholder="950 * 2 + 1200">
+  </label>
+  <button type="submit">Compute</button>
+</form>
+
+<h2>Dispatch a boarding pass</h2>
+<form method="post" action="/admin/dispatch" class="sixs-form">
+  <label>Counter printer
+    <input name="printer" placeholder="counter1">
+  </label>
+  <label>Pass body
+    <textarea name="body" rows="4" placeholder="EXC1 x2 …"></textarea>
+  </label>
+  <button type="submit">Send to spooler</button>
+</form>

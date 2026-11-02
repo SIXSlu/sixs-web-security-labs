@@ -1,0 +1,4 @@
+#!/bin/sh
+# Board announcer - lays one line of text onto the platform displays.
+# The announcer replies on stdout with the queue ticket for the log.
+echo "queued: $*"

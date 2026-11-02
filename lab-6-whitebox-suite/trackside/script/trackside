@@ -1,0 +1,10 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use FindBin;
+use lib "$FindBin::Bin/../lib";
+
+use Mojolicious::Commands;
+
+# TrackSide - Copperline Railway trackside defect log.
+Mojolicious::Commands->start_app('TrackSide');

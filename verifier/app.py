@@ -30,6 +30,7 @@ README_ROUTES = {
     "/lab-3-papertrail/README.md": "lab-3-papertrail/README.md",
     "/lab-4-harbordock/README.md": "lab-4-harbordock/README.md",
     "/lab-5-tidegate/README.md": "lab-5-tidegate/README.md",
+    "/lab-6-whitebox-suite/README.md": "lab-6-whitebox-suite/README.md",
 }
 
 def stored_hash(fid):

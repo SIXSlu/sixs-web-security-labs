@@ -1,0 +1,3 @@
+requires 'Mojolicious', '9.0';
+requires 'DBI', '1.6';
+requires 'DBD::SQLite', '1.70';

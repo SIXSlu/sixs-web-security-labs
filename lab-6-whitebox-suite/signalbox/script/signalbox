@@ -1,0 +1,10 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use FindBin;
+use lib "$FindBin::Bin/../lib";
+
+use Mojolicious::Commands;
+
+# SignalBox - Copperline Railway departure boards and signal-box console.
+Mojolicious::Commands->start_app('SignalBox');

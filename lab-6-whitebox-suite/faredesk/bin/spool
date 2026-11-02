@@ -1,0 +1,5 @@
+#!/bin/sh
+# Counter printer spooler - consumes a boarding pass from stdin and
+# queues it on the named counter printer. The kiosk never reads back
+# from the spooler; printing is fire-and-forget.
+cat > /dev/null

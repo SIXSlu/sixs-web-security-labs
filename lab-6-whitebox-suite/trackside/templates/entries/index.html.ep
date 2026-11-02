@@ -1,0 +1,34 @@
+% title 'TrackSide — defect log';
+<h1>Defect log</h1>
+<p class="sixs-dim">Latest defects filed from the field. Search to triage, or file a
+new entry from the walk.</p>
+
+<form method="get" action="/search" class="sixs-form">
+  <label>Search the log
+    <input name="q" placeholder="brake">
+  </label>
+  <button type="submit">Search</button>
+</form>
+
+<h2>File a defect</h2>
+<form method="post" action="/entries" class="sixs-form">
+  <label>Unit
+    <input name="unit" placeholder="LOCO-9" required>
+  </label>
+  <label>Summary
+    <input name="summary" placeholder="short problem" required>
+  </label>
+  <label>Detail
+    <textarea name="body" rows="4" placeholder="what was seen and done"></textarea>
+  </label>
+  <button type="submit">File entry</button>
+</form>
+
+<h2>Recent entries</h2>
+% for my $e (@$entries) {
+<div class="sixs-card">
+  <p><strong><%= $e->{unit} %></strong> — <%= $e->{summary} %></p>
+  <p><%== $e->{body} %></p>
+  <p class="sixs-dim"><%= $e->{filed_at} %></p>
+</div>
+% }

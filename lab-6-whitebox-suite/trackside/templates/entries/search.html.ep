@@ -1,0 +1,17 @@
+% title 'TrackSide — search';
+<h1>Search results</h1>
+<p class="sixs-dim">Entries matching <code><%= $q %></code> — matches highlighted for
+the duty fitter.</p>
+
+<% if (!@$results) { %>
+<p>No entries matched.</p>
+<% } else { %>
+% for my $e (@$results) {
+<div class="sixs-card">
+  <p><strong><%= $e->{unit} %></strong> — <%= $e->{summary} %> <span class="sixs-dim">(<%= $e->{count} %> match(es))</span></p>
+  <p><%== $e->{body} %></p>
+</div>
+% }
+<% } %>
+
+<p><a href="/">Back to the log</a></p>

@@ -1,0 +1,26 @@
+% title 'FareDesk — today’s fares';
+<h1>Today’s fares</h1>
+<p class="sixs-dim">Heritage train rides on the Copperline. Book at the counter form below;
+your boarding pass prints at the counter printer.</p>
+
+<table class="sixs-table">
+  <thead><tr><th>Code</th><th>Description</th><th>Fare</th></tr></thead>
+% for my $fare (@$fares) {
+  <tr>
+    <td><%= $fare->{code} %></td>
+    <td><%= $fare->{description} %></td>
+    <td>&pound;<%= sprintf('%.2f', $fare->{pence} / 100) %></td>
+  </tr>
+% }
+</table>
+
+<h2>Book at the counter</h2>
+<form method="post" action="/book" class="sixs-form">
+  <label>Fare code
+    <input name="code" placeholder="SVR1" required>
+  </label>
+  <label>Seats (1–10)
+    <input name="quantity" value="1">
+  </label>
+  <button type="submit">Print boarding pass</button>
+</form>

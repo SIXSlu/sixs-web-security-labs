@@ -180,8 +180,28 @@ const LABS = [
     groups:[{ name:"TideGate manifest gateway", flags:[
       {id:"l5-1",label:"FLAG 1 — unauthenticated blind SQLi (credential lift)"},
       {id:"l5-2",label:"FLAG 2 — XXE â file read (LFI)"},
-      {id:"l5-3",label:"FLAG 3 — XML mapping sheet â RCE"},
+      {id:"l5-3",label:"FLAG 3 — XML mapping sheet → RCE"},
     ]}]},
+  { id:"lab6", name:"Lab 6 — White-Box Suite III", href:"../lab-6-whitebox-suite/README.md", tag:"white-box",
+    groups:[
+      {name:"FareDesk (Perl / Mojolicious)", flags:[
+        {id:"l6-fare-1",label:"FLAG 1 — signed-session forgery (committed secret)"},
+        {id:"l6-fare-2",label:"FLAG 2 — string eval behind a name blocklist"},
+        {id:"l6-fare-3",label:"FLAG 3 — two-arg open pipe → blind RCE"},
+      ]},
+      {name:"TrackSide (Perl / regex + YAML)", flags:[
+        {id:"l6-track-1",label:"FLAG 1 — regex code injection (?{ ... })"},
+        {id:"l6-track-2",label:"FLAG 2 — YAML deserialization → DESTROY gadget RCE"},
+      ]},
+      {name:"SignalBox (Perl / Mojolicious)", flags:[
+        {id:"l6-sig-1",label:"FLAG 1 — two-arg open read-mode command pipe"},
+        {id:"l6-sig-2",label:"FLAG 2 — string-form shell injection (qx)"},
+      ]},
+      {name:"CrewRoom (Node / Express + admin bot)", flags:[
+        {id:"l6-crew-1",label:"FLAG 1 — stored XSS → admin tap hijack"},
+        {id:"l6-crew-2",label:"FLAG 2 — prototype pollution → shell-mode archiver"},
+      ]},
+    ]},
 ];
 
 const KEY = "sixs-flag-console-v1";

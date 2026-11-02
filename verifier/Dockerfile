@@ -11,6 +11,7 @@ COPY lab-2-whitebox-suite/README.md /readmes/lab-2-whitebox-suite/README.md
 COPY lab-3-papertrail/README.md /readmes/lab-3-papertrail/README.md
 COPY lab-4-harbordock/README.md /readmes/lab-4-harbordock/README.md
 COPY lab-5-tidegate/README.md /readmes/lab-5-tidegate/README.md
+COPY lab-6-whitebox-suite/README.md /readmes/lab-6-whitebox-suite/README.md
 ENV FLAG_DIR=/flaghashes PANEL=/app/index.html PORT=8099 README_DIR=/readmes
 EXPOSE 8099
 CMD ["python3", "/app/app.py"]

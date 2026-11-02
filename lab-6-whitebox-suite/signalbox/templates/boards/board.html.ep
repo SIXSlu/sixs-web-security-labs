@@ -1,0 +1,26 @@
+% title 'SignalBox — departures';
+<h1>Copperline departures</h1>
+<p class="sixs-dim">Today’s trains from Copperline Halt. Announcements appear on the
+platform displays when the signalman queues them.</p>
+
+<table class="sixs-table">
+  <thead><tr><th>Time</th><th>Destination</th><th>Platform</th><th>Note</th></tr></thead>
+% for my $d (@$departures) {
+  <tr>
+    <td><%= $d->{time} %></td>
+    <td><%= $d->{destination} %></td>
+    <td><%= $d->{platform} %></td>
+    <td><%= $d->{note} %></td>
+  </tr>
+% }
+</table>
+
+<h2>Signalman console</h2>
+<p class="sixs-dim">Ops console for staff: unlock with the commissioning PIN to tail
+shift logs and queue announcements.</p>
+<form method="post" action="/ops/unlock" class="sixs-form">
+  <label>PIN
+    <input name="pin" placeholder="commissioning pin">
+  </label>
+  <button type="submit">Unlock</button>
+</form>

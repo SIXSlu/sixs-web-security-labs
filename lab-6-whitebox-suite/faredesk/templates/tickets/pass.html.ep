@@ -1,0 +1,9 @@
+% title 'FareDesk — boarding pass';
+<h1>Boarding pass</h1>
+<div class="sixs-card">
+  <p><strong>Fare:</strong> <%= $code %></p>
+  <p><strong>Seats:</strong> <%= $quantity %></p>
+  <p><strong>Total:</strong> &pound;<%= sprintf('%.2f', $pence_total / 100) %></p>
+  <p class="sixs-dim">Queued for the counter printer. Enjoy the ride.</p>
+</div>
+<p><a href="/">Back to the fare board</a></p>

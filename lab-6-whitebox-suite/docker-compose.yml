@@ -1,0 +1,60 @@
+name: sixs-lab6
+
+services:
+
+  # ------------------------------------------------------------------
+  # Challenge 1: FareDesk ticket-counter kiosk (Perl / Mojolicious + SQLite)
+  # ------------------------------------------------------------------
+  faredesk:
+    build: ./faredesk
+    ports:
+      - "8092:3000"   # HTTP
+    volumes:
+      - flaghashes:/flaghashes
+    networks: [faredesk-net]
+    restart: unless-stopped
+
+  # ------------------------------------------------------------------
+  # Challenge 2: TrackSide defect log (Perl / Mojolicious + regex + YAML)
+  # ------------------------------------------------------------------
+  trackside:
+    build: ./trackside
+    ports:
+      - "8093:3000"   # HTTP
+    volumes:
+      - flaghashes:/flaghashes
+    networks: [trackside-net]
+    restart: unless-stopped
+
+  # ------------------------------------------------------------------
+  # Challenge 3: SignalBox departure boards (Perl / Mojolicious + SQLite)
+  # ------------------------------------------------------------------
+  signalbox:
+    build: ./signalbox
+    ports:
+      - "8094:3000"   # HTTP
+    volumes:
+      - flaghashes:/flaghashes
+    networks: [signalbox-net]
+    restart: unless-stopped
+
+  # ------------------------------------------------------------------
+  # Challenge 4: CrewRoom notice wall (Node 20 / Express + jsdom admin bot)
+  # ------------------------------------------------------------------
+  crewroom:
+    build: ./crewroom
+    ports:
+      - "8095:3000"   # HTTP
+    volumes:
+      - flaghashes:/flaghashes
+    networks: [crewroom-net]
+    restart: unless-stopped
+
+networks:
+  faredesk-net:
+  trackside-net:
+  signalbox-net:
+  crewroom-net:
+
+volumes:
+  flaghashes:

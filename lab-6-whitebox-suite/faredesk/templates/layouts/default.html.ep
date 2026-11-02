@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/sixs.css">
+</head>
+<body>
+<header class="sixs-header">
+  <span class="sixs-brand">FR&nbsp;·&nbsp;FareDesk</span>
+  <span class="sixs-tag">Copperline Railway — ticket counter kiosk</span>
+</header>
+<main class="sixs-main">
+<%= content %>
+</main>
+<footer class="sixs-footer">
+  <span>Copperline Railway heritage booking system</span>
+  <span class="sixs-dim">counter build 3.11 · perl/mojolicious</span>
+</footer>
+</body>
+</html>

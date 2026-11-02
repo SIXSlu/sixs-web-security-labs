@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CrewRoom — Copperline crew wall</title>
+  <link rel="stylesheet" href="/sixs.css">
+  <style>
+    .notice { border: 1px solid rgba(127, 127, 127, .35); border-radius: 6px;
+              padding: .6rem .9rem; margin: .6rem 0; }
+    .notice header { font-size: .78rem; opacity: .7; margin-bottom: .3rem; }
+    .notice .body { white-space: pre-wrap; }
+    .notice-form textarea, .notice-form input { width: 100%; }
+  </style>
+</head>
+<body>
+<header class="sixs-header">
+  <span class="sixs-brand">CR&nbsp;·&nbsp;CrewRoom</span>
+  <span class="sixs-tag">Copperline Railway — crew notice wall</span>
+</header>
+<main class="sixs-main">
+  <h2>The wall</h2>
+  <p id="who" class="sixs-dim">checking session…</p>
+  <div id="wall"></div>
+
+  <h2>Pin a notice</h2>
+  <form id="pin" class="notice-form">
+    <p><input id="author" placeholder="your name" size="24"></p>
+    <p><textarea id="body" placeholder="notice text" rows="4"></textarea></p>
+    <p><button type="submit">pin it</button></p>
+  </form>
+</main>
+<footer class="sixs-footer">
+  <span>Copperline Railway crew communications</span>
+  <span class="sixs-dim">wall build 1.4 · node/express</span>
+</footer>
+<script src="/wall.js"></script>
+</body>
+</html>
