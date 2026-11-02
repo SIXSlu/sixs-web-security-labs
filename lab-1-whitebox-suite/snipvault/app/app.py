@@ -191,12 +191,19 @@ def preview():
     except Exception:
         abort(400, "path must be base64")
 
-    # vault files live under STORAGE_DIR; keep the path inside it
+    # Vault files live under STORAGE_DIR; keep the path inside it.
     rel = rel.replace("../", "")
     if rel.startswith("/"):
         abort(400, "absolute paths are not supported")
 
-    full = os.path.join(STORAGE_DIR, rel)
+    # Resolve what is left and keep it inside the application root. The
+    # preview may still reach other files of this app (that is the
+    # file-read bug this lab trains), but it must not be able to walk
+    # out of /opt/snipvault into the wider filesystem.
+    full = os.path.realpath(os.path.join(STORAGE_DIR, rel))
+    root = os.path.realpath(APP_ROOT)
+    if full != root and not full.startswith(root + os.sep):
+        abort(400, "path escapes the app root")
     if not os.path.isfile(full):
         abort(404, "no such vault file")
 

@@ -4,7 +4,10 @@
 # fail initdb, so everything is tolerant and it always exits 0.
 D="atlas"
 mkdir -p /flaghashes 2>/dev/null
-emit() { printf '%s' "$2" | sha256sum | cut -d' ' -f1 > "/flaghashes/$1.sha256" 2>/dev/null; }
+emit() {
+  rm -f "/flaghashes/$1.sha256" 2>/dev/null
+  printf '%s' "$2" | sha256sum | cut -d' ' -f1 > "/flaghashes/$1.sha256" 2>/dev/null
+}
 q() { psql -At -U "$POSTGRES_USER" -d "$D" -c "$1" 2>/dev/null; }
 ADMIN="$(q "SELECT api_key FROM users WHERE username='admin'")"
 BLIND="$(q "SELECT note FROM ops_notes WHERE note LIKE 'FLAG{%' LIMIT 1")"

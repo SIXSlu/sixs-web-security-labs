@@ -11,6 +11,8 @@ FLAG="FLAG{atlas_rce_$(tr -dc a-f0-9 < /dev/urandom | head -c 12)}"
 export ATLAS_DB_FLAG="$FLAG"
 mkdir -p /flaghashes 2>/dev/null || true
 chmod 0777 /flaghashes 2>/dev/null || true
-printf '%s' "$FLAG" | sha256sum | cut -d' ' -f1 > /flaghashes/l1-atlas-3.sha256 2>/dev/null || true
+rm -f /flaghashes/l1-atlas-3.sha256 2>/dev/null || true
+printf '%s' "$FLAG" | sha256sum | cut -d' ' -f1 > /flaghashes/l1-atlas-3.sha256 2>/dev/null \
+  || echo "run.sh: could not publish l1-atlas-3 hash; the verifier will reject this flag" >&2
 
 exec docker-entrypoint.sh postgres

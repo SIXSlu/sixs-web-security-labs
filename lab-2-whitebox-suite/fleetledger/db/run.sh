@@ -10,6 +10,8 @@ FLAG="FLAG{fleetledger_udf_$(tr -dc a-f0-9 < /dev/urandom | head -c 12)}"
 export FLEET_DB_FLAG="$FLAG"
 mkdir -p /flaghashes 2>/dev/null || true
 chmod 0777 /flaghashes 2>/dev/null || true
-printf '%s' "$FLAG" | sha256sum | cut -d' ' -f1 > /flaghashes/l2-fl-3.sha256 2>/dev/null || true
+rm -f /flaghashes/l2-fl-3.sha256 2>/dev/null || true
+printf '%s' "$FLAG" | sha256sum | cut -d' ' -f1 > /flaghashes/l2-fl-3.sha256 2>/dev/null \
+  || echo "run.sh: could not publish l2-fl-3 hash; the verifier will reject this flag" >&2
 
 exec docker-entrypoint.sh postgres

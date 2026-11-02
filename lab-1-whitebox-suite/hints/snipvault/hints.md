@@ -15,10 +15,11 @@
 **Tier 2 - strong hints**
 
 - Target list, in order: the app's own config file (path is hardcoded in
-  the source - read it), the deployment key inside it, the service
-  account's home directory contents (no directory listing here, so
-  reason about *likely* filenames from the entrypoint's perspective -
-  read `entrypoint.sh` as a hint of layout), `/proc/self/environ`.
+  the source - read it) and the deployment key inside it. Note what the
+  preview does with the path *after* the filter: the resolved path is
+  confined to the app root, so anything outside `/opt/snipvault` - the
+  service account's home included - is out of the preview's reach.
+  The flag that lives there is exactly what the second bug is for.
 - Once you hold the HMAC key, the session token is fully forgeable.
   The token body is not JSON, not base64-of-JSON - look at the first
   bytes after you decode the base64 (`\x80\x03...` should ring a bell).

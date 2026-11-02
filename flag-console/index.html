@@ -98,7 +98,7 @@ h1{font-size:1.7rem;margin:0 0 .3rem;letter-spacing:-.01em}
 <body>
 <nav class="nav">
   <a class="brand" href="#" title="SIXS Labs — stay curious, stay caffeinated"><span class="mark">SX</span> SIXS&nbsp;Labs</a>
-  <a class="app" href="../README.md">Flag Console</a>
+  <a class="app" id="repoReadme" href="../README.md">Flag Console</a>
   <span class="tag">student progress</span>
   <span class="spacer"></span>
   <button class="ghost" id="reset" type="button">Reset progress</button>
@@ -314,6 +314,13 @@ async function detectVerifier(){
       const m = document.getElementById("mode");
       m.classList.add("live");
       document.getElementById("modeText").textContent = "live verification";
+      // Live mode: the verifier serves the repo and lab READMEs itself, so
+      // the file-relative "../<lab>/README.md" links become same-origin
+      // absolute paths instead of dead 404s on this service.
+      document.getElementById("repoReadme").href = "/README.md";
+      document.querySelectorAll('a[href^="../lab-"]').forEach(a => {
+        a.href = "/" + a.getAttribute("href").replace("../", "");
+      });
       // re-check any flags already saved in this browser
       await Promise.all(allFlags.filter(fmtOK).map(verify));
       refreshTotals();

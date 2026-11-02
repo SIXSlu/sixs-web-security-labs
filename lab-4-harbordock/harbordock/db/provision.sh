@@ -28,6 +28,12 @@ INSERT INTO token_vault (label, value) VALUES ('api_ops', '${OPS_TOKEN}')
 SQL
 
 mkdir -p /flaghashes 2>/dev/null || true
-printf '%s' "$FLAG_SQLI"  | sha256sum | cut -d' ' -f1 > /flaghashes/l4-1.sha256 2>/dev/null || true
-printf '%s' "$FLAG_VAULT" | sha256sum | cut -d' ' -f1 > /flaghashes/l4-2.sha256 2>/dev/null || true
+# Remove before writing: a bare `>` only truncates, which a leftover hash
+# file owned by another uid refuses even in the 1777 dir — the panel would
+# then keep verifying against a stale flag from an earlier stack run.
+rm -f /flaghashes/l4-1.sha256 /flaghashes/l4-2.sha256 2>/dev/null || true
+printf '%s' "$FLAG_SQLI"  | sha256sum | cut -d' ' -f1 > /flaghashes/l4-1.sha256 2>/dev/null \
+  || echo "provision: could not publish l4-1 hash; the verifier will reject this flag" >&2
+printf '%s' "$FLAG_VAULT" | sha256sum | cut -d' ' -f1 > /flaghashes/l4-2.sha256 2>/dev/null \
+  || echo "provision: could not publish l4-2 hash; the verifier will reject this flag" >&2
 echo "provision: token_vault and notes minted for this start"
